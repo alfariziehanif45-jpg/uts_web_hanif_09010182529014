@@ -1,56 +1,33 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Kategori')
+@section('title', 'Detail Buku')
 
 @section('content')
-    <h3 class="mb-3">Detail Kategori</h3>
-
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <h5 class="fw-bold">{{ $category->name }}</h5>
-            <p class="text-muted mb-0">{{ $category->description ?: 'Tidak ada deskripsi.' }}</p>
-        </div>
-        <div class="card-footer bg-white">
-            <a href="{{ route('categories.edit', $category) }}" class="btn btn-warning">Edit</a>
-            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Kembali</a>
-        </div>
-    </div>
+    <h3 class="mb-3">Detail Buku</h3>
 
     <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <strong>Buku dalam kategori ini ({{ $books->total() }})</strong>
-            <a href="{{ route('books.index', ['category_id' => $category->id]) }}"
-               class="btn btn-sm btn-outline-primary">Lihat di Data Buku</a>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Judul</th>
-                        <th>Penulis</th>
-                        <th>Penerbit</th>
-                        <th>Tahun</th>
-                        <th class="text-center">Stok</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($books as $book)
-                        <tr>
-                            <td><a href="{{ route('books.show', $book) }}">{{ $book->title }}</a></td>
-                            <td>{{ $book->author }}</td>
-                            <td>{{ $book->publisher }}</td>
-                            <td>{{ $book->year }}</td>
-                            <td class="text-center">{{ $book->stock }}</td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="text-center text-muted py-3">Belum ada buku di kategori ini.</td></tr>
-                    @endforelse
-                </tbody>
+        <div class="card-body">
+            <table class="table table-borderless mb-0">
+                <tr><th style="width:200px">Judul</th><td>{{ $book->title }}</td></tr>
+                <tr><th>Penulis</th><td>{{ $book->author }}</td></tr>
+                <tr><th>Penerbit</th><td>{{ $book->publisher }}</td></tr>
+                <tr><th>Tahun Terbit</th><td>{{ $book->year }}</td></tr>
+                <tr><th>Stok</th><td>{{ $book->stock }}</td></tr>
+                <tr>
+                    <th>Kategori</th>
+                    <td>
+                        <a href="{{ route('categories.show', $book->category) }}"
+                           class="badge bg-secondary text-decoration-none">{{ $book->category->name }}</a>
+                        <div class="text-muted small mt-1">{{ $book->category->description }}</div>
+                    </td>
+                </tr>
+                <tr><th>Dibuat</th><td>{{ $book->created_at->format('d M Y H:i') }}</td></tr>
+                <tr><th>Terakhir Diubah</th><td>{{ $book->updated_at->format('d M Y H:i') }}</td></tr>
             </table>
         </div>
-    </div>
-
-    <div class="mt-3">
-        {{ $books->links() }}
+        <div class="card-footer bg-white">
+            <a href="{{ route('books.edit', $book) }}" class="btn btn-warning">Edit</a>
+            <a href="{{ route('books.index') }}" class="btn btn-secondary">Kembali</a>
+        </div>
     </div>
 @endsection
