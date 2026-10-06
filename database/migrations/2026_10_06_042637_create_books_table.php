@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')
                   ->constrained('categories')
-                  ->cascadeOnDelete();
+                  ->restrictOnDelete();
             $table->string('title');
             $table->string('author');
             $table->string('publisher');
