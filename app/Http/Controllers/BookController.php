@@ -10,26 +10,22 @@ use Illuminate\View\View;
 
 class BookController extends Controller
 {
-    /** Daftar buku + BONUS: pencarian (judul/penulis) & filter kategori */
     public function index(Request $request): View
     {
         $books = Book::with('category')
-            // Pencarian berdasarkan judul ATAU penulis
             ->when($request->filled('search'), function ($query) use ($request) {
                 $keyword = trim($request->search);
-
                 $query->where(function ($q) use ($keyword) {
                     $q->where('title', 'like', "%{$keyword}%")
                       ->orWhere('author', 'like', "%{$keyword}%");
                 });
             })
-            // Filter berdasarkan kategori
             ->when($request->filled('category_id'), function ($query) use ($request) {
                 $query->where('category_id', $request->category_id);
             })
             ->latest()
             ->paginate(10)
-            ->withQueryString(); // supaya filter tetap aktif saat pindah halaman
+            ->withQueryString();
 
         return view('books.index', [
             'books'      => $books,
@@ -39,17 +35,14 @@ class BookController extends Controller
 
     public function create(): View
     {
-        return view('books.create', [
-            'categories' => Category::orderBy('name')->get(),
-        ]);
+        return view('books.create', ['categories' => Category::orderBy('name')->get()]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         Book::create($this->validated($request));
 
-        return redirect()->route('books.index')
-            ->with('success', 'Buku berhasil ditambahkan.');
+        return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan.');
     }
 
     public function show(Book $book): View
@@ -71,16 +64,14 @@ class BookController extends Controller
     {
         $book->update($this->validated($request));
 
-        return redirect()->route('books.index')
-            ->with('success', 'Buku berhasil diperbarui.');
+        return redirect()->route('books.index')->with('success', 'Buku berhasil diperbarui.');
     }
 
     public function destroy(Book $book): RedirectResponse
     {
         $book->delete();
 
-        return redirect()->route('books.index')
-            ->with('success', 'Buku berhasil dihapus.');
+        return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus.');
     }
 
     private function validated(Request $request): array

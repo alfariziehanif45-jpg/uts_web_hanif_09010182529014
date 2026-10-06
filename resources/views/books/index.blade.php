@@ -8,7 +8,6 @@
         <a href="{{ route('books.create') }}" class="btn btn-primary">+ Tambah Buku</a>
     </div>
 
-    {{-- BONUS: Pencarian & Filter Kategori --}}
     <form action="{{ route('books.index') }}" method="GET" class="card card-body border-0 shadow-sm mb-3">
         <div class="row g-2">
             <div class="col-md-6">
@@ -32,6 +31,18 @@
             </div>
         </div>
     </form>
+
+    @if (request()->filled('search') || request()->filled('category_id'))
+        <div class="alert alert-info py-2">
+            Ditemukan <strong>{{ $books->total() }}</strong> buku
+            @if (request()->filled('search'))
+                dengan kata kunci "<strong>{{ request('search') }}</strong>"
+            @endif
+            @if (request()->filled('category_id'))
+                di kategori "<strong>{{ $categories->firstWhere('id', request('category_id'))?->name }}</strong>"
+            @endif
+        </div>
+    @endif
 
     <div class="card border-0 shadow-sm">
         <div class="table-responsive">
